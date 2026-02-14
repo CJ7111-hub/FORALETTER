@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine Letter</title>
+  <style>
+    :root{
+      --bg1:#fff1f7;
+      --bg2:#f3f7ff;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --muted:#666;
+      --accent:#ff4d8d;
+      --accent2:#7c5cff;
+      --shadow: 0 18px 50px rgba(0,0,0,.12);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at 20% 10%, var(--bg1), transparent 55%),
+                  radial-gradient(circle at 90% 30%, var(--bg2), transparent 55%),
+                  linear-gradient(135deg, #fff 0%, #fdf0f6 40%, #eef4ff 100%);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      overflow-x:hidden;
+    }
+
+    /* floating hearts */
+    .heart{
+      position:absolute;
+      width:16px;
+      height:16px;
+      transform: rotate(45deg);
+      opacity:.25;
+      animation: floatUp 8s linear infinite;
+      background: var(--accent);
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background: var(--accent);
+    }
+    .heart:before{left:-8px; top:0;}
+    .heart:after{left:0; top:-8px;}
+
+    @keyframes floatUp{
+      0%{transform:translateY(40px) rotate(45deg) scale(.9); opacity:0;}
+      20%{opacity:.25;}
+      100%{transform:translateY(-110vh) rotate(45deg) scale(1.4); opacity:0;}
+    }
+
+    .container{
+      width: min(950px, 100%);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.6);
+      position:relative;
+      overflow:hidden;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(20px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom: 15px;
+    }
+
+    .title h1{
+      margin:0;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 750;
+      letter-spacing:.2px;
+    }
+
+    .title p{
+      margin:4px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      border-radius: 14px;
+      padding:10px 14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:.2s ease;
+      font-size:13px;
+    }
+
+    .btn-primary{
+      background: linear-gradient(135deg, var(--accent), #ff7ab6);
+      color:white;
+      box-shadow: 0 12px 30px rgba(255,77,141,.2);
+    }
+    .btn-primary:hover{transform: translateY(-2px);}
+
+    .btn-outline{
+      background: rgba(255,255,255,.8);
+      border:1px solid rgba(0,0,0,.08);
+      color:#333;
+    }
+
+    /* INTRO SCREEN */
+    .intro{
+      text-align:center;
+      padding:25px 10px;
+    }
+
+    .intro .emoji{
+      font-size: 55px;
+      margin-bottom: 10px;
+      animation: bounce 1.6s infinite;
+    }
+
+    @keyframes bounce{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-10px);}
+    }
+
+    /* LETTER CONTENT */
+    .letter-content{
+      display:none;
+      animation: popUp 0.8s ease;
+    }
+
+    .letter{
+      line-height: 1.75;
+      font-size: 15px;
+      color:#2f2f2f;
+      white-space: pre-line;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.06);
+      min-height: 200px;
+    }
+
+    /* Typing Cursor */
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      background-color: var(--accent);
+      margin-left: 3px;
+      animation: blink 0.7s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .footer{
+      margin-top:20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .signature{ font-weight:700; color:#333; }
+    .tiny-heart{ color:var(--accent); font-size: 16px; animation: pulse 1.6s infinite; }
+    
+    @keyframes pulse{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.2);}
+    }
+
+    @media (max-width:600px){
+      .letter{font-size:14px;}
+      button{width:100%;}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="hearts"></div>
+
+  <main class="container">
+    <section class="card">
+
+      <div class="intro" id="introScreen">
+        <div class="emoji">✉️</div>
+        <h2>Letter For You</h2>
+        <p>Someone wrote this letter with sincerity…<br>Click the button below when you're ready ☺️</p>
+        <button class="btn-primary" onclick="openLetter()"> Open My Letter</button>
+      </div>
+
+      <div class="letter-content" id="letterScreen">
+        <div class="header">
+          <div class="title">
+            <h1>📧 A Letter For You</h1>
+            <p>A gentle message, made with sincerity.</p>
+          </div>
+          <div class="actions">
+            <button class="btn-outline" onclick="goBack()">⬅ Back</button>
+            <button class="btn-primary" onclick="toggleMode()">🌙 Theme</button>
+          </div>
+        </div>
+
+        <div class="letter" id="letterBody"></div>
+
+        <div class="footer" id="letterFooter">
+          <div>Made with sincerity <span class="tiny-heart">❤</span></div>
+          <div class="signature">— From a friend :)) </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // The full text of your letter
+    const fullText = `Hi ☺️ Today is Valentine’s Day. I hope you’re doing well today.  
+I just want you to know how special you are to me.
+
+Wait... Wait... I know what you might be thinking right now, but please hear me out.
+
+First, I want to share a little bit about myself with you.  
+You see all my life I feel like life has been unfair and harsh sometimes. I spend most of my time studying, trying my best to grow and improve, because I feel like it’s the only way I can repay my parents for all their sacrifices. I don’t want to fail them.
+
+And if I’m being real… I also didn’t grow up feeling loved. I can’t even fully define what “love” feels like, because most of my life I’ve been alone isolated. I do have friends, but I’m usually quiet and I often prefer being alone. I used to think I could live my whole life independently, like I didn’t need anyone.
+
+But deep inside, I’ve always wanted to experience what others have.  
+To laugh, to feel free, to hurt, to suffer, to enjoy life, and to just feel normal.
+
+Maybe that’s why I sometimes feel like life is harsh. I think it might be because of how I grew up. I didn’t have full control over my life, and I felt disconnected from the world. That’s why people always ask me, “Why are you so serious?” or “Why are you always quiet?” or “Why are you different?”  
+And honestly… sometimes I also ask myself the same thing.
+
+There are moments where I wonder if there’s something wrong with me… or if I’ll ever have the chance to experience a real relationship, or just live normally.
+
+When I first met you, I didn’t think much about it. Not because I didn’t care it’s just how I am. I always told myself, “Nah, I’m not going to get into relationships.” My life is already messed up, I don’t want to drag anyone into it.
+
+That’s also why whenever a girl interact to me, I don’t really know how to respond. The truth is… I get attached easily. So most of the time I just stay quiet, nod, and keep things simple.
+
+Weird, I know… 😶
+
+
+But somehow......., 
+
+
+I ended up having the chance to talk to you someone who is kind, sweet, and genuine. And even though we barely knew each other, I felt lucky just being able to have small conversations with you.
+
+Because honestly… those small moments made me happy.
+
+You made me feel something I wasn’t used to.  
+You showed me what the real world looks like.  
+You made me understand things I never learned before.
+
+In a way, you taught me how to love…  
+to love myself, and to value other people.
+
+You helped fix the doubts I had about myself.  
+You made me feel like I have worth… like I matter… like I have a purpose.  
+And you made my days better in ways you probably don’t even realize.
+
+I really appreciate you.  
+I’m genuinely thankful, and I’m happy that I got to know someone as kind as you.
+
+I adore you from afar, and I truly respect the kind of person you are.  
+Even when you try your best to stay strong, I can still see that you have struggles too. And honestly… it hurts me knowing that you sometimes carry things silently. I wish I could be the kind of person you could lean on when life feels heavy.
+
+But at the same time, I keep reminding myself that maybe the distance between us has a purpose. Maybe it’s God’s way of protecting us, or teaching us something. Maybe there’s a reason why our paths crossed—why I got the chance to meet someone like you, even for a short time.
+
+Because meeting you wasn’t something small for me.  
+You became someone I genuinely care about.  
+And whether you realize it or not, you left a mark in my life that I don’t think I can ever forget.
+
+You’re always in my prayers.  
+And sometimes I catch myself thinking of you randomly—during quiet moments, during stressful days, or even when I’m trying to focus. It’s strange, but it happens naturally… like you became a part of my thoughts without me even noticing.
+
+So please take good care of yourself.  
+Take care of your heart, your mind, and your peace.  
+And when life gets hard, I hope you never forget that you are not alone, even if it feels like it sometimes.
+
+More than anything, I want to see you achieve your goals and live the life you deserve. I want to see you happy, successful, and surrounded by people who truly appreciate you the way you deserve to be appreciated.
+
+And if one day life becomes easier for you, I hope you’ll smile more, laugh more, and finally feel the kind of peace you’ve always wanted.
+
+Thank you… for being you.  
+Thank you for your kindness, your patience, and for making me feel that I matter.
+
+I don’t know what the future holds, but I just want you to know this:  
+I’ll always be proud of you, and I’ll always be grateful that I met you.
+)`;
+
+    let typingTimeout;
+
+    function openLetter() {
+      document.getElementById("introScreen").style.display = "none";
+      document.getElementById("letterScreen").style.display = "block";
+      document.getElementById("letterFooter").style.opacity = "0";
+      
+      const letterBody = document.getElementById("letterBody");
+      letterBody.innerHTML = '<span class="cursor"></span>'; // Clear and add cursor
+      
+      const words = fullText.split(" ");
+      let i = 0;
+
+      function typeWord() {
+        if (i < words.length) {
+          // Add the word plus a space, keeping the cursor at the end
+          const currentText = words.slice(0, i + 1).join(" ");
+          letterBody.innerHTML = currentText + '<span class="cursor"></span>';
+          i++;
+          // Adjust 50 to make it faster or 150 to make it slower
+          typingTimeout = setTimeout(typeWord, 0); 
+        } else {
+          // Finished typing
+          document.querySelector(".cursor").remove();
+          document.getElementById("letterFooter").style.opacity = "1";
+        }
+      }
+
+      typeWord();
+    }
+
+    function goBack() {
+      clearTimeout(typingTimeout);
+      document.getElementById("letterScreen").style.display = "none";
+      document.getElementById("introScreen").style.display = "block";
+    }
+
+    // floating hearts
+    const heartsContainer = document.getElementById("hearts");
+    function createHeart(){
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (6 + Math.random() * 5) + "s";
+      heart.style.opacity = (0.15 + Math.random() * 0.25);
+      heart.style.transform = "rotate(45deg) scale(" + (0.6 + Math.random() * 1.2) + ")";
+      heartsContainer.appendChild(heart);
+      setTimeout(()=> heart.remove(), 10000);
+    }
+    setInterval(createHeart, 450);
+
+    let dark = false;
+    function toggleMode(){
+      dark = !dark;
+      if(dark){
+        document.documentElement.style.setProperty("--card", "rgba(20,20,30,.75)");
+        document.documentElement.style.setProperty("--text", "#f2f2f2");
+        document.documentElement.style.setProperty("--muted", "#cfcfe0");
+        document.body.style.background = "linear-gradient(135deg, #0b0b12 0%, #141425 60%, #0c0c18 100%)";
+      }else{
+        document.documentElement.style.setProperty("--card", "#ffffffcc");
+        document.documentElement.style.setProperty("--text", "#2b2b2b");
+        document.documentElement.style.setProperty("--muted", "#666");
+        document.body.style.background = "linear-gradient(135deg, #fff 0%, #fdf0f6 40%, #eef4ff 100%)";
+      }
+    }
+  </script>
+</body>
+</html>
