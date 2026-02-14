@@ -94,7 +94,7 @@
 
     .title h1{
       margin:0;
-      font-size: clamp(20px, 3vw, 28px);
+      font-size: clamp(18px, 4vw, 28px);
       font-weight: 750;
       letter-spacing:.2px;
     }
@@ -102,7 +102,7 @@
     .title p{
       margin:4px 0 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .actions{
@@ -126,7 +126,6 @@
       color:white;
       box-shadow: 0 12px 30px rgba(255,77,141,.2);
     }
-    .btn-primary:hover{transform: translateY(-2px);}
 
     .btn-outline{
       background: rgba(255,255,255,.8);
@@ -134,7 +133,6 @@
       color:#333;
     }
 
-    /* INTRO SCREEN */
     .intro{
       text-align:center;
       padding:25px 10px;
@@ -151,7 +149,6 @@
       50%{transform:translateY(-10px);}
     }
 
-    /* LETTER CONTENT */
     .letter-content{
       display:none;
       animation: popUp 0.8s ease;
@@ -167,9 +164,9 @@
       background: rgba(255,255,255,.7);
       border: 1px solid rgba(0,0,0,.06);
       min-height: 200px;
+      overflow-wrap: break-word; /* Added for mobile */
     }
 
-    /* Typing Cursor */
     .cursor {
       display: inline-block;
       width: 3px;
@@ -193,7 +190,7 @@
       color: var(--muted);
       font-size: 13px;
       opacity: 0;
-      transition: opacity 1s ease;
+      transition: opacity 1.5s ease;
     }
 
     .signature{ font-weight:700; color:#333; }
@@ -205,8 +202,10 @@
     }
 
     @media (max-width:600px){
-      .letter{font-size:14px;}
-      button{width:100%;}
+      body{ padding: 10px; align-items: flex-start; } /* Better scroll on mobile */
+      .letter{ font-size:14px; padding: 15px; }
+      button{ width:100%; }
+      .actions{ width: 100%; }
     }
   </style>
 </head>
@@ -244,13 +243,11 @@
         </div>
       </div>
 
-      
-
     </section>
   </main>
 
   <script>
-    // The full text of your letter
+    // FIXED: Corrected the backtick at the end of the text
     const fullText = `Hi ☺️ Today is Valentine’s Day. I hope you’re doing well today.  
 I just want you to know how special you are to me.
 
@@ -275,9 +272,7 @@ That’s also why whenever a girl interact to me, I don’t really know how to r
 
 Weird, I know… 😶
 
-
 But somehow......., 
-
 
 I ended up having the chance to talk to you someone who is kind, sweet, and genuine. And even though we barely knew each other, I felt lucky just being able to have small conversations with you.
 
@@ -321,8 +316,7 @@ Thank you… for being you.
 Thank you for your kindness, your patience, and for making me feel that I matter.
 
 I don’t know what the future holds, but I just want you to know this:  
-I’ll always be proud of you, and I’ll always be grateful that I met you.
-)`;
+I’ll always be proud of you, and I’ll always be grateful that I met you.`;
 
     let typingTimeout;
 
@@ -332,33 +326,39 @@ I’ll always be proud of you, and I’ll always be grateful that I met you.
       document.getElementById("letterFooter").style.opacity = "0";
       
       const letterBody = document.getElementById("letterBody");
-      letterBody.innerHTML = '<span class="cursor"></span>'; // Clear and add cursor
+      letterBody.innerHTML = '<span class="cursor"></span>';
       
       const words = fullText.split(" ");
       let i = 0;
 
       function typeWord() {
         if (i < words.length) {
-          // Add the word plus a space, keeping the cursor at the end
           const currentText = words.slice(0, i + 1).join(" ");
           letterBody.innerHTML = currentText + '<span class="cursor"></span>';
           i++;
-          // Adjust 50 to make it faster or 150 to make it slower
-          typingTimeout = setTimeout(typeWord, 0); 
+
+          // FIXED: Set to 250ms (Slow/Thoughtful speed)
+          typingTimeout = setTimeout(typeWord, 250);
+
+          // AUTO-SCROLL for mobile
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+          });
         } else {
-          // Finished typing
-          document.querySelector(".cursor").remove();
+          const cursor = document.querySelector(".cursor");
+          if(cursor) cursor.remove();
           document.getElementById("letterFooter").style.opacity = "1";
         }
       }
-
-      typeWord();
+      typeWord(0);
     }
 
     function goBack() {
       clearTimeout(typingTimeout);
       document.getElementById("letterScreen").style.display = "none";
       document.getElementById("introScreen").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     // floating hearts
